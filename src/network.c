@@ -6,33 +6,6 @@
 #include "db.h"
 #include "network.h"
 
-int start_server(int port) {
-    int server_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_socket < 0) {
-        perror("Socket creation failed");
-        exit(EXIT_FAILURE);
-    }
-
-    struct sockaddr_in server_addr;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(port);
-    server_addr.sin_addr.s_addr = INADDR_ANY;
-
-    if (bind(server_socket, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-        perror("Bind failed");
-        close(server_socket);
-        exit(EXIT_FAILURE);
-    }
-
-    if (listen(server_socket, 10) < 0) {
-        perror("Listen failed");
-        close(server_socket);
-        exit(EXIT_FAILURE);
-    }
-
-    return server_socket;
-}
-
 void handle_client(int client_socket, Database *db) {
     char buffer[1024];
     int len;
@@ -63,4 +36,39 @@ void handle_client(int client_socket, Database *db) {
             }
         }
     }
+}
+
+void* client_handler(void *arg) {
+    int client_socket = *(int*)arg;
+    Database *db = (Database*)((char*)arg + sizeof(int));  // Lấy địa chỉ Database từ arg
+    handle_client(client_socket, db);
+    free(arg);  // Giải phóng bộ nhớ
+    return NULL;
+}
+
+int start_server(int port) {
+    int server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_socket < 0) {
+        perror("Socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(port);
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+
+    if (bind(server_socket, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
+        perror("Bind failed");
+        close(server_socket);
+        exit(EXIT_FAILURE);
+    }
+
+    if (listen(server_socket, 10) < 0) {
+        perror("Listen failed");
+        close(server_socket);
+        exit(EXIT_FAILURE);
+    }
+
+    return server_socket;
 }
