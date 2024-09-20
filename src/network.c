@@ -40,9 +40,9 @@ void handle_client(int client_socket, Database *db) {
 
 void* client_handler(void *arg) {
     int client_socket = *(int*)arg;
-    Database *db = (Database*)((char*)arg + sizeof(int));  // Lấy địa chỉ Database từ arg
+    Database *db = (Database*)((char*)arg + sizeof(int));
     handle_client(client_socket, db);
-    free(arg);  // Giải phóng bộ nhớ
+    free(arg);
     return NULL;
 }
 

@@ -7,7 +7,7 @@
 #include "network.h"
 
 int main() {
-    int port = 6379; // Redis thường sử dụng port này
+    int port = 6379;
     int server_socket = start_server(port);
 
     Database *db = create_database();
@@ -25,14 +25,12 @@ int main() {
             continue;
         }
 
-        // Tạo thread cho mỗi client
         pthread_t tid;
         if (pthread_create(&tid, NULL, client_handler, client_socket) != 0) {
             perror("Failed to create thread");
             free(client_socket);
         }
 
-        // Không cần đợi thread hoàn thành
         pthread_detach(tid);
     }
 
