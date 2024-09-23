@@ -6,27 +6,31 @@
 #include "db.h"
 #include "network.h"
 
-int main() {
+int main()
+{
     int port = 6379;
     int server_socket = start_server(port);
 
     Database *db = create_database();
     printf("Server running on port %d\n", port);
 
-    while (1) {
+    while (1)
+    {
         struct sockaddr_in client_addr;
         socklen_t client_len = sizeof(client_addr);
         int *client_socket = malloc(sizeof(int));
         *client_socket = accept(server_socket, (struct sockaddr *)&client_addr, &client_len);
 
-        if (*client_socket < 0) {
+        if (*client_socket < 0)
+        {
             perror("Accept failed");
             free(client_socket);
             continue;
         }
 
         pthread_t tid;
-        if (pthread_create(&tid, NULL, client_handler, client_socket) != 0) {
+        if (pthread_create(&tid, NULL, client_handler, client_socket) != 0)
+        {
             perror("Failed to create thread");
             free(client_socket);
         }
