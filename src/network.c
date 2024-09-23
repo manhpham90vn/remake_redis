@@ -33,6 +33,11 @@ void handle_client(int client_socket, Database *db) {
                 } else {
                     write(client_socket, "NULL\n", 5);
                 }
+            } else if (strcmp(command, "DEL") == 0) {
+                delete(db, key);
+                write(client_socket, "OK\n", 3);
+            } else {
+                write(client_socket, "Invalid command\n", 16);
             }
         }
     }

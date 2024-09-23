@@ -15,6 +15,7 @@ typedef struct {
 Database* create_database();
 void set(Database *db, const char *key, const char *value);
 const char* get(Database *db, const char *key);
+void delete(Database *db, const char *key);
 void free_database(Database *db);
 
 #endif

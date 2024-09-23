@@ -39,6 +39,20 @@ const char* get(Database *db, const char *key) {
     return NULL;
 }
 
+void delete(Database *db, const char *key) {
+    for (int i = 0; i < db->size; i++) {
+        if (strcmp(db->data[i].key, key) == 0) {
+            free(db->data[i].key);
+            free(db->data[i].value);
+            for (int j = i; j < db->size - 1; j++) {
+                db->data[j] = db->data[j + 1];
+            }
+            db->size--;
+            return;
+        }
+    }
+}
+
 void free_database(Database *db) {
     for (int i = 0; i < db->size; i++) {
         free(db->data[i].key);
