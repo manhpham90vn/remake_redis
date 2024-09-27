@@ -25,4 +25,5 @@ SET test test
 OK
 GET test
 test
+DEL test
 ```
